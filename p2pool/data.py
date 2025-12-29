@@ -955,9 +955,9 @@ def get_warnings(tracker, best_share, net, bitcoind_getinfo, bitcoind_work_value
             'An upgrade is likely necessary. Check https://github.com/jtoomim/p2pool/tree/1mb_segwit or https://forum.bitcoin.com/pools/p2pool-decentralized-dos-resistant-trustless-censorship-resistant-pool-t69932-99999.html for more information.' % (
                 majority_desired_version, 100*desired_version_counts[majority_desired_version]/sum(desired_version_counts.itervalues())))
     
-    if bitcoind_getinfo['warnings'] != '':
+    if bitcoind_getinfo['warnings']:
         if 'This is a pre-release test build' not in bitcoind_getinfo['warnings']:
-            res.append('(from bitcoind) %s' % (bitcoind_getinfo['warnings'],))
+            res.append('(from bitcoind) ~%s~' % (bitcoind_getinfo['warnings'],))
     
     version_warning = getattr(net, 'VERSION_WARNING', lambda v: None)(bitcoind_getinfo['version'])
     if version_warning is not None:

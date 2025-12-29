@@ -18,22 +18,34 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir $P2POOL_HOME \
-  && bash -c "wget https://bootstrap.pypa.io/ez_setup.py -O - | pypy" \
+  && apt-get update \
+  && apt-get install -y --reinstall sudo nano git curl mlocate python2.7 python-is-python2 python-openssl python-dev \
+  && wget https://bootstrap.pypa.io/pip/2.7/get-pip.py \
+  && python get-pip.py \
+  && rm get-pip.py \
+  && pip \
+  && python -m pip install cffi service_identity \
+  && bash -c "wget https://bootstrap.pypa.io/ez_setup.py -O - | python" \
   && rm setuptools-*.zip \
   && wget https://pypi.python.org/packages/source/z/zope.interface/zope.interface-4.1.3.tar.gz#md5=9ae3d24c0c7415deb249dd1a132f0f79 \
   && tar zxf zope.interface-4.1.3.tar.gz \
   && cd /p2pool/zope.interface-4.1.3 \
-  && pypy setup.py install \
+  && python setup.py install \
   && cd /p2pool \
   && rm -r zope.interface-4.1.3* \
   && wget https://pypi.python.org/packages/source/T/Twisted/Twisted-15.4.0.tar.bz2 \
   && tar jxf Twisted-15.4.0.tar.bz2 \
   && cd /p2pool/Twisted-15.4.0 \
-  && pypy setup.py install \
+  && python setup.py install \
   && cd /p2pool \
-  && rm -r Twisted-15.4.0*
+  && rm -r Twisted-15.4.0* \
+  && pwd \
+  && ls -la $P2POOL_HOME \
+  && updatedb 
 
 COPY . $P2POOL_HOME
-
 WORKDIR $P2POOL_HOME
-ENTRYPOINT ["pypy", "run_p2pool.py"]
+
+RUN python -m pip install -r requirements.txt
+
+ENTRYPOINT ["python2.7", "run_p2pool.py"]
